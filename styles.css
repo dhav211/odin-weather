@@ -1,0 +1,4 @@
+.inline-spaced {
+    display: flex;
+    gap: 3rem;
+}
