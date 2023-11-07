@@ -1,14 +1,5 @@
 import { getDailyWeather } from "./daily-weather.js";
-
-async function getCurrentWeather(cityName) {
-  const response = await fetch(
-    `https://api.weatherapi.com/v1/current.json?key=a153e9f2c28c497e9e613836230111&q=${cityName}`,
-    { mode: "cors" },
-  );
-  const weather = await response.json();
-
-  return weather;
-}
+import { getHourlyForecast } from "./hourly-weather.js";
 
 async function getForecast(cityName) {
   const response = await fetch(
@@ -16,21 +7,24 @@ async function getForecast(cityName) {
     { mode: "cors" },
   );
   const weather = await response.json();
-  console.log(weather);
+
   return weather;
 }
 
 async function setFields() {
+  const forecast = await getForecast("portland");
   const cityHeader = document.getElementById("city-header");
   const currentTemp = document.getElementById("current-temp");
-  const currentWeather = await getCurrentWeather("portland");
   document
     .getElementById("daily-weather-holder")
-    .appendChild(getDailyWeather(await getForecast("portland")));
+    .appendChild(getDailyWeather(forecast["forecast"]));
 
-  cityHeader.textContent = currentWeather["location"].name;
-  currentTemp.textContent = `Current Temperature: ${currentWeather["current"].temp_f}F`;
+  cityHeader.textContent = forecast["location"].name;
+  currentTemp.textContent = `Current Temperature: ${forecast["current"].temp_f}F`;
+
+  document
+    .getElementById("hourly-weather-holder")
+    .appendChild(getHourlyForecast(forecast["forecast"]));
 }
 
 setFields();
-getForecast("portland");
