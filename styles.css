@@ -111,7 +111,7 @@ input {
     align-items: center;
 }
 
-@media (max-width: 662px) {
+@media (max-width: 726px) {
     .flex-left-aligned {
         align-items: center;
     }
