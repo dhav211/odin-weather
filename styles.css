@@ -31,6 +31,14 @@ input {
     font-size: 16px;
 }
 
+button {
+    width: 7rem;
+    font-size: 16px;
+    border: none;
+    background-color: #F5F7F8;
+    border-radius: 16px;
+}
+
 #city-form {
     padding: 8px;
     background-color: transparent;
@@ -51,10 +59,15 @@ input {
     margin-top: 1rem;
 }
 
-#current-weather-details-container {
+.rounded-container {
     background-color: #435585;
     border-radius: 2rem;
-    margin: 0 2rem;
+    margin: 0 2rem 2rem;
+}
+
+.space-around {
+    display: flex;
+    justify-content: space-around;
 }
 
 .inline-spaced {
@@ -73,8 +86,11 @@ input {
 }
 
 .padded-container {
-    padding: 24px;
-    padding: 24px;
+    padding: 24px 24px;
+}
+
+.padding-bottom {
+    padding-bottom: 24px;
 }
 
 .flex-centered {
@@ -109,6 +125,28 @@ input {
     display: flex;
     justify-content: start;
     align-items: center;
+}
+
+#daily-hourly-weather-button-container {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-bottom: 1rem;
+}
+
+.daily-weather-title {
+    font-size: clamp(22px, 2.5vw, 28px);
+}
+
+.daily-weather-condition-container {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    align-items: center;
+}
+
+.daily-weather-condition-container  h2 {
+    margin: 0 0;
 }
 
 @media (max-width: 726px) {

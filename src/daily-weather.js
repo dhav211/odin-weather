@@ -12,23 +12,14 @@ export function createDailyWeather(forecast) {
   try {
     const threeDayDaily = setThreeDayDaily(forecast);
     const dailyWeatherElement = document.createElement("div");
-    dailyWeatherElement.classList.add("inline-spaced");
+    dailyWeatherElement.classList.add("space-around");
     threeDayDaily.forEach((day) => {
-      const dayElement = document.createElement("div");
-
-      const title = document.createElement("h3");
-      title.textContent = day.title;
-
-      const condition = document.createElement("p");
-      condition.textContent = day.condition;
-
-      const high = document.createElement("p");
-      high.textContent = day.high;
-
-      const low = document.createElement("p");
-      low.textContent = day.low;
-
-      dayElement.replaceChildren(title, condition, high, low);
+      const dayElement = setDayElement(
+        day.title,
+        day.conditionCode,
+        day.high,
+        day.low,
+      );
       dailyWeatherElement.appendChild(dayElement);
     });
 
@@ -39,6 +30,37 @@ export function createDailyWeather(forecast) {
     errorText.textContent = "Failed to load daily forecast";
     return errorText;
   }
+}
+
+function setDayElement(title, conditionCode, high, low) {
+  const dayElement = document.createElement("div");
+
+  const titleText = document.createElement("h2");
+  titleText.classList.add("daily-weather-title");
+  titleText.textContent = title;
+
+  const conditionContainer = document.createElement("div");
+  conditionContainer.classList.add("daily-weather-condition-container");
+  const icon = document.createElement("img");
+  icon.classList.add("small-icon");
+  fetch("src/conditions.json")
+    .then((r) => r.json())
+    .then(
+      (conditions) =>
+        (icon.src = `./images/icons/${conditions[conditionCode].icon}.svg`),
+    );
+  const tempContainer = document.createElement("div");
+  const highTemp = document.createElement("h2");
+  highTemp.textContent = `${high}°`;
+  const lowTemp = document.createElement("h2");
+  lowTemp.textContent = `${low}°`;
+  tempContainer.replaceChildren(highTemp, lowTemp);
+
+  conditionContainer.replaceChildren(icon, tempContainer);
+
+  dayElement.replaceChildren(titleText, conditionContainer);
+
+  return dayElement;
 }
 
 function setThreeDayDaily(forecast) {

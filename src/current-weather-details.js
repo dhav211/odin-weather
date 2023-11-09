@@ -1,10 +1,27 @@
-export function createCurrentWeatherDetails(currentForecast) {
-  const container = document.createElement("div");
-  container.classList.add("padded-container");
-  container.appendChild(setCurrentWether(currentForecast));
-  container.appendChild(setCurrentWeatherDetails(currentForecast));
+/*
+All the information about the current weather is generated here. I chose to create everything via javascript because nearly
+everything was being altered, so I didn't want to flood my css IDs with minor details. Probably the wrong choice, but whatever.
+This will consist of three major sections. Firstly the top will show the the temp and the current condition.
+Next will be two divs which will wrap when screen width is shrunk. Upon wrap, they will also also change their alignment. So they
+will be centered and no longer offset to the left or right
+*/
 
-  return container;
+export function createCurrentWeatherDetails(currentForecast) {
+  try {
+    const container = document.createElement("div");
+    container.classList.add("padded-container");
+    container.appendChild(setCurrentWether(currentForecast));
+    container.appendChild(setCurrentWeatherDetails(currentForecast));
+
+    return container;
+  } catch (err) {
+    console.error(err);
+    const errorText = document.createElement("p");
+    errorText.textContent = "Failed to load current weather details";
+    errorText.style.textAlign = "center";
+
+    return errorText;
+  }
 }
 
 function setCurrentWether(currentForecast) {

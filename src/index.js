@@ -62,6 +62,9 @@ async function setFields(cityName) {
 
   currentWeatherDetails.replaceChildren();
   currentWeatherDetails.appendChild(createCurrentWeatherDetails(forecast));
+
+  const dailyForecast = createDailyWeather(forecast["forecast"]);
+  document.getElementById("forecast-container").replaceChildren(dailyForecast);
 }
 
 function setCurrentTime() {
