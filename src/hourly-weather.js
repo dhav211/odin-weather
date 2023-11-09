@@ -1,16 +1,3 @@
-/*
-This is similar to the daily weather but here we are doing a 24 hour span instead of 3 days.
-Here we will get the utc hour of todays date, save this as variable as currentHour
-get remainingHours by 24 - current hour.
-now we get into todays forcast, we will slice the starting from currenthour to the end of array.
-if remainingHours is greater than 0 then we will have to slice tomorrows hours from start to remainingHours.
-now create a new array called hourly, use the concat method to concatinate both of the arrays we created.
-lets go thru each entry in that array and create an hourly weather object which consists of the condition and the temp
-
-at this point we can create the div which has a class of inline-spaced, then apend all 24 hourly weather elements
-which are two stacked p, one with coniditon and the other with temp
-*/
-
 class HourlyWeather {
   constructor(hour, condition, conditionCode, temperature) {
     this.hour = hour;
@@ -20,7 +7,7 @@ class HourlyWeather {
   }
 }
 
-export function getHourlyForecast(forecast) {
+export function createHourlyForecast(forecast) {
   try {
     const hourlyForecast = setHourlyForecast(forecast);
     const hourlyWeatherElement = document.createElement("div");

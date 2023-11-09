@@ -8,13 +8,32 @@
     <title>Odin Weather</title>
   </head>
   <body>
-    <h1 id="city-header">Cool Weather</h1>
-    <h2 id="current-temp">Current Temperature: 55F</h2>
+    <header>
+      <h1 id="city-header">Cool City</h1>
+      <form>
+        <input
+          type="text"
+          id="city-form"
+          name="city"
+          placeholder="Enter A City Name"
+        />
+        <input id="submit-form" type="submit" value="Submit" />
+      </form>
+    </header>
+    <img
+      id="banner"
+      src="./images/photos/snowy_day.jpg"
+      alt="imaged based on time and weather"
+    />
+    <h2 id="current-time-date">A cool date</h2>
+    <div id="current-weather-details-container"></div>
+
+    <!-- <h2 id="current-temp">Current Temperature: 55F</h2>
     <div id="daily-weather-holder">
       <h2>3-Day Forecast</h2>
     </div>
     <div id="hourly-weather-holder">
-      <h2>24-Hour Forecast</h2>
-    </div>
+      <h2>24-Hour Forecast</h2> -->
+    <!-- </div> -->
   </body>
 </html>

@@ -1,4 +1,126 @@
+body, html {
+    margin: 0;
+}
+
+body {
+    background-color: #363062;
+    color: white;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+header {
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+h1 {
+    text-align: center;
+    font-size: max(64px ,6vw);
+    margin: 4px;
+}
+
+h2 {
+   text-align: center; 
+}
+
+input {
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+#city-form {
+    padding: 8px;
+    background-color: transparent;
+    color: #F5F7F8;
+    border: #F5F7F8 solid 1px;
+}
+
+#submit-form {
+    border: none;
+    padding: 9px;
+    background-color: #F5F7F8;
+}
+
+#banner {
+    width: 100%;
+    height: 450px;
+    object-fit: cover;
+    margin-top: 1rem;
+}
+
+#current-weather-details-container {
+    background-color: #435585;
+    border-radius: 2rem;
+    margin: 0 2rem;
+}
+
 .inline-spaced {
     display: flex;
     gap: 3rem;
+}
+
+.inline-centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.padded-container {
+    padding: 24px;
+    padding: 24px;
+}
+
+.flex-centered {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.small-icon {
+    width: 48px;
+    height: 48px;
+    filter: invert(100%) sepia(1%) saturate(1696%) hue-rotate(171deg) brightness(90%) contrast(117%);
+}
+
+.detail-container {
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.flex-left-aligned {
+    align-items: start;
+}
+
+.flex-right-aligned {
+    align-items: end;
+}
+
+.weather-detail {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+
+@media (max-width: 662px) {
+    .flex-left-aligned {
+        align-items: center;
+    }
+    
+    .flex-right-aligned {
+        align-items: center;
+    }
+
+    .weather-detail {
+        justify-content: center;
+    }
 }

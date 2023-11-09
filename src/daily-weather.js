@@ -8,7 +8,7 @@ class DailyWeather {
   }
 }
 
-export function getDailyWeather(forecast) {
+export function createDailyWeather(forecast) {
   try {
     const threeDayDaily = setThreeDayDaily(forecast);
     const dailyWeatherElement = document.createElement("div");
