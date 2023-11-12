@@ -1,5 +1,5 @@
 import { createDailyWeather } from "./daily-weather.js";
-import { createHourlyForecast } from "./hourly-weather.js";
+import { createHourlyForecast, closeHourlyForecast } from "./hourly-weather.js";
 import { createCurrentWeatherDetails } from "./current-weather-details.js";
 
 async function getForecast(cityName) {
@@ -64,9 +64,41 @@ async function setFields(cityName) {
   currentWeatherDetails.replaceChildren();
   currentWeatherDetails.appendChild(createCurrentWeatherDetails(forecast));
 
-  //const dailyForecast = createDailyWeather(forecast["forecast"]);
-  const hourlyForecast = createHourlyForecast(forecast);
-  document.getElementById("forecast-container").replaceChildren(hourlyForecast);
+  setDailyHourlyButtons(forecast);
+}
+
+function setDailyHourlyButtons(forecast) {
+  const dailyButton = document.getElementById("daily-button");
+  const hourlyButton = document.getElementById("hourly-button");
+
+  const dailyForecast = createDailyWeather(forecast["forecast"]);
+  dailyButton.style.backgroundColor = "#F5E8C7";
+
+  document
+    .getElementById("daily-hourly-forecast-container")
+    .replaceChildren(dailyForecast);
+
+  dailyButton.addEventListener("click", () => {
+    closeHourlyForecast();
+
+    document
+      .getElementById("daily-hourly-forecast-container")
+      .replaceChildren(dailyForecast);
+
+    dailyButton.style.backgroundColor = "#F5E8C7";
+    hourlyButton.style.backgroundColor = "#F5F7F8";
+  });
+
+  hourlyButton.addEventListener("click", () => {
+    const hourlyForecast = createHourlyForecast(forecast);
+
+    document
+      .getElementById("daily-hourly-forecast-container")
+      .replaceChildren(hourlyForecast);
+
+    hourlyButton.style.backgroundColor = "#F5E8C7";
+    dailyButton.style.backgroundColor = "#F5F7F8";
+  });
 }
 
 function setCurrentTime(forecast) {

@@ -1,3 +1,9 @@
+/*
+This ultimately creates and returns the element for the 24 hour weather forecast. It consists of each hour element that shows the time,
+condition icon, and temperature. It also is responsive with not only css grid/flexbox but also listens in for window resizing and will
+rebuild itself when window is small or big enough.
+*/
+
 class HourlyWeather {
   constructor(hour, condition, conditionCode, temperature) {
     this.hour = hour;
@@ -7,34 +13,89 @@ class HourlyWeather {
   }
 }
 
+class HourlyWeatherContainer {
+  #mainContainer = document.createElement("div");
+
+  constructor(numberOfHours, numberOfNavigationCircles) {
+    this.hoursContainer = document.createElement("div");
+    this.navigationCircleContainer = document.createElement("div");
+    this.element = this.setElement();
+    this.numberOfHours = numberOfHours;
+    this.numberOfNavigationCircles = numberOfNavigationCircles;
+    this.currentHighlightedNavigationCircle = 0;
+  }
+
+  setHoursContainer(newHoursContainer) {
+    this.#mainContainer.replaceChild(newHoursContainer, this.hoursContainer);
+    this.hoursContainer = newHoursContainer;
+  }
+
+  setNavigationCircleContainer(newNavigationCircleContainer) {
+    this.#mainContainer.replaceChild(
+      newNavigationCircleContainer,
+      this.navigationCircleContainer,
+    );
+    this.navigationCircleContainer = newNavigationCircleContainer;
+  }
+
+  setElement() {
+    const initialContainer = document.createElement("div");
+    initialContainer.id = "hourly-forecast-container";
+
+    const leftArrow = document.createElement("img");
+    leftArrow.src = "./images/icons/chevron-left.svg";
+    leftArrow.classList.add("small-icon");
+    leftArrow.addEventListener("click", () =>
+      arrowOnClick(
+        hourlyWeatherContainer.currentHighlightedNavigationCircle - 1 < 0
+          ? hourlyWeatherContainer.numberOfNavigationCircles - 1
+          : hourlyWeatherContainer.currentHighlightedNavigationCircle - 1,
+      ),
+    );
+
+    this.#mainContainer.appendChild(this.hoursContainer);
+    this.#mainContainer.appendChild(this.navigationCircleContainer);
+
+    const rightArrow = document.createElement("img");
+    rightArrow.src = "./images/icons/chevron-right.svg";
+    rightArrow.classList.add("small-icon");
+    rightArrow.addEventListener("click", () =>
+      arrowOnClick(
+        hourlyWeatherContainer.currentHighlightedNavigationCircle + 1 ===
+          hourlyWeatherContainer.numberOfNavigationCircles
+          ? 0
+          : hourlyWeatherContainer.currentHighlightedNavigationCircle + 1,
+      ),
+    );
+
+    initialContainer.replaceChildren(
+      leftArrow,
+      this.#mainContainer,
+      rightArrow,
+    );
+
+    return initialContainer;
+  }
+}
+
 let forecast;
-let hourlyWeatherElement;
-let numberOfHours = 0;
-let numberOfNavigationCircles = 0;
-let currentHighlightedNavigationCircle = 0;
+let hourlyWeatherContainer;
+let isOpen = false;
+
+export function closeHourlyForecast() {
+  isOpen = false;
+}
 
 export function createHourlyForecast(currentForecast) {
   try {
     forecast = currentForecast;
-    hourlyWeatherElement = document.createElement("div");
+    isOpen = false;
+    hourlyWeatherContainer = setInitalHourlyWeatherContainer();
 
-    if (window.innerWidth >= 1000) {
-      numberOfHours = 8;
-      numberOfNavigationCircles = 3;
-    } else if (window.innerWidth < 1000 && window.innerWidth >= 700) {
-      numberOfHours = 6;
-      numberOfNavigationCircles = 4;
-    } else if (window.innerWidth < 700 && window.innerWidth >= 500) {
-      numberOfHours = 4;
-      numberOfNavigationCircles = 6;
-    } else if (window.innerWidth < 500) {
-      numberOfHours = 3;
-      numberOfNavigationCircles = 8;
-    }
+    setWeatherHours(0);
+    setNavigationCircles();
 
-    buildHourlyWeatherElement(0);
-
-    return hourlyWeatherElement;
+    return hourlyWeatherContainer.element;
   } catch (err) {
     console.error(err);
     const errorText = document.createElement("p");
@@ -43,55 +104,39 @@ export function createHourlyForecast(currentForecast) {
   }
 }
 
-// TODO use css grid to divide the hourly weather element in three parts. two parts which are about 48-64px for the arrows on each end
-//  then the middle section can be auto sized
+function setInitalHourlyWeatherContainer() {
+  let numberOfHours = 0;
+  let numberOfNavigationCircles = 0;
 
-function buildHourlyWeatherElement(index) {
-  hourlyWeatherElement.replaceChildren();
+  if (window.innerWidth >= 1000) {
+    numberOfHours = 8;
+    numberOfNavigationCircles = 3;
+  } else if (window.innerWidth < 1000 && window.innerWidth >= 700) {
+    numberOfHours = 6;
+    numberOfNavigationCircles = 4;
+  } else if (window.innerWidth < 700 && window.innerWidth >= 500) {
+    numberOfHours = 4;
+    numberOfNavigationCircles = 6;
+  } else if (window.innerWidth < 500) {
+    numberOfHours = 3;
+    numberOfNavigationCircles = 8;
+  }
 
-  setWeatherHours(index * numberOfHours);
-  setNavigationCircles();
+  return new HourlyWeatherContainer(numberOfHours, numberOfNavigationCircles);
 }
 
 function setWeatherHours(startingHour) {
   const hourlyForecast = setHourlyForecast(forecast);
   const hours = document.createElement("div");
   hours.classList.add("forecast-container");
-  hourlyWeatherElement.appendChild(hours);
 
-  const leftArrow = document.createElement("img");
-  leftArrow.src = "./images/icons/chevron-left.svg";
-  leftArrow.classList.add("small-icon");
-  leftArrow.addEventListener("click", () => {
-    currentHighlightedNavigationCircle =
-      currentHighlightedNavigationCircle - 1 < 0
-        ? numberOfNavigationCircles - 1
-        : currentHighlightedNavigationCircle - 1;
-
-    buildHourlyWeatherElement(currentHighlightedNavigationCircle);
-  });
-
-  const rightArrow = document.createElement("img");
-  rightArrow.src = "./images/icons/chevron-right.svg";
-  rightArrow.classList.add("small-icon");
-  rightArrow.addEventListener("click", () => {
-    currentHighlightedNavigationCircle =
-      currentHighlightedNavigationCircle + 1 === numberOfNavigationCircles
-        ? 0
-        : currentHighlightedNavigationCircle + 1;
-
-    buildHourlyWeatherElement(currentHighlightedNavigationCircle);
-  });
-
-  hours.appendChild(leftArrow);
-
-  if (numberOfHours + startingHour > 24) {
-    console.log("hey stop!!");
-    currentHighlightedNavigationCircle--;
-    startingHour -= numberOfHours;
+  // THis is a failsafe for not letting our array access go out of bounds which is possible on resize
+  if (hourlyWeatherContainer.numberOfHours + startingHour > 24) {
+    hourlyWeatherContainer.currentHighlightedNavigationCircle--;
+    startingHour -= hourlyWeatherContainer.numberOfHours;
   }
 
-  for (let i = 0; i < numberOfHours; i++) {
+  for (let i = 0; i < hourlyWeatherContainer.numberOfHours; i++) {
     const hourElement = setHourElement(
       hourlyForecast[i + startingHour].hour,
       hourlyForecast[i + startingHour].conditionCode,
@@ -101,30 +146,58 @@ function setWeatherHours(startingHour) {
     hours.appendChild(hourElement);
   }
 
-  hours.appendChild(rightArrow);
+  hourlyWeatherContainer.setHoursContainer(hours);
 }
 
 function setNavigationCircles() {
   const navigationCircles = document.createElement("div");
   navigationCircles.classList.add("navigation-circles");
 
-  for (let i = 0; i < numberOfNavigationCircles; i++) {
+  for (let i = 0; i < hourlyWeatherContainer.numberOfNavigationCircles; i++) {
     const navigationCircle = document.createElement("div");
     navigationCircle.classList.add("navigation-circle");
     navigationCircles.appendChild(navigationCircle);
+
     navigationCircle.addEventListener("click", () => {
-      currentHighlightedNavigationCircle = i;
-      buildHourlyWeatherElement(i);
+      const circles = hourlyWeatherContainer.navigationCircleContainer.children;
+      circles[
+        hourlyWeatherContainer.currentHighlightedNavigationCircle
+      ].style.backgroundColor = "#F5F7F8"; // Previously highlight circle will turn white
+      circles[i].style.backgroundColor = "#F5E8C7"; // Clicked circle will turn yellow
+      hourlyWeatherContainer.currentHighlightedNavigationCircle = i;
+      setWeatherHours(i * hourlyWeatherContainer.numberOfHours);
     });
 
-    if (i === currentHighlightedNavigationCircle) {
+    if (i === hourlyWeatherContainer.currentHighlightedNavigationCircle) {
       navigationCircle.style.backgroundColor = "#F5E8C7";
     }
   }
 
-  hourlyWeatherElement.appendChild(navigationCircles);
+  hourlyWeatherContainer.setNavigationCircleContainer(navigationCircles);
 }
 
+function arrowOnClick(newCurrentHighlightedNavigationCircle) {
+  // Set the previously highlighted circle back to white
+  const navigationCircles =
+    hourlyWeatherContainer.navigationCircleContainer.children;
+  navigationCircles[
+    hourlyWeatherContainer.currentHighlightedNavigationCircle
+  ].style.backgroundColor = "#F5F7F8";
+  hourlyWeatherContainer.currentHighlightedNavigationCircle =
+    newCurrentHighlightedNavigationCircle;
+
+  setWeatherHours(
+    hourlyWeatherContainer.currentHighlightedNavigationCircle *
+      hourlyWeatherContainer.numberOfHours,
+  );
+
+  // The currently highlighted circle to yellowish
+  navigationCircles[
+    hourlyWeatherContainer.currentHighlightedNavigationCircle
+  ].style.backgroundColor = "#F5E8C7";
+}
+
+// sets the individual weather element. This consists of an hour, condition icon and temperature elements
 function setHourElement(hour, conditionCode, temperature) {
   const hourElement = document.createElement("div");
 
@@ -150,6 +223,7 @@ function setHourElement(hour, conditionCode, temperature) {
   return hourElement;
 }
 
+// sets the data for the hourly weather elements grabbed from the weather api for given location
 function setHourlyForecast() {
   const hourly = [];
 
@@ -197,30 +271,42 @@ function setHour(date) {
 
 // Trigger a rebuild of the hourly weather element
 addEventListener("resize", () => {
-  if (window.innerWidth >= 1000 && numberOfHours !== 8) {
+  if (!isOpen) return;
+
+  if (window.innerWidth >= 1000 && hourlyWeatherContainer.numberOfHours !== 8) {
     setForRebuildOnResize(8, 3);
   } else if (
     window.innerWidth < 1000 &&
     window.innerWidth >= 700 &&
-    numberOfHours !== 6
+    hourlyWeatherContainer.numberOfHours !== 6
   ) {
     setForRebuildOnResize(6, 4);
   } else if (
     window.innerWidth < 700 &&
     window.innerWidth >= 500 &&
-    numberOfHours !== 4
+    hourlyWeatherContainer.numberOfHours !== 4
   ) {
     setForRebuildOnResize(4, 6);
-  } else if (window.innerWidth < 500 && numberOfHours !== 3) {
+  } else if (
+    window.innerWidth < 500 &&
+    hourlyWeatherContainer.numberOfHours !== 3
+  ) {
     setForRebuildOnResize(3, 8);
   }
 });
 
 function setForRebuildOnResize(hours, circles) {
-  currentHighlightedNavigationCircle = Math.round(
-    (numberOfHours * currentHighlightedNavigationCircle) / hours,
+  hourlyWeatherContainer.currentHighlightedNavigationCircle = Math.round(
+    (hourlyWeatherContainer.numberOfHours *
+      hourlyWeatherContainer.currentHighlightedNavigationCircle) /
+      hours,
   );
-  numberOfHours = hours;
-  numberOfNavigationCircles = circles;
-  buildHourlyWeatherElement(currentHighlightedNavigationCircle);
+  hourlyWeatherContainer.numberOfHours = hours;
+  hourlyWeatherContainer.numberOfNavigationCircles = circles;
+
+  setWeatherHours(
+    hourlyWeatherContainer.currentHighlightedNavigationCircle *
+      hourlyWeatherContainer.numberOfHours,
+  );
+  setNavigationCircles();
 }
