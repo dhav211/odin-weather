@@ -44,7 +44,8 @@ async function setFields(cityName) {
   const forecast = await getForecast(cityName);
   console.log(forecast);
   const cityHeader = document.getElementById("city-header");
-  document.getElementById("current-time-date").textContent = setCurrentTime();
+  document.getElementById("current-time-date").textContent =
+    setCurrentTime(forecast);
   // document
   //   .getElementById("daily-weather-holder")
   //   .appendChild(createDailyWeather(forecast["forecast"]));
@@ -63,12 +64,13 @@ async function setFields(cityName) {
   currentWeatherDetails.replaceChildren();
   currentWeatherDetails.appendChild(createCurrentWeatherDetails(forecast));
 
-  const dailyForecast = createDailyWeather(forecast["forecast"]);
-  document.getElementById("forecast-container").replaceChildren(dailyForecast);
+  //const dailyForecast = createDailyWeather(forecast["forecast"]);
+  const hourlyForecast = createHourlyForecast(forecast);
+  document.getElementById("forecast-container").replaceChildren(hourlyForecast);
 }
 
-function setCurrentTime() {
-  return new Date().toLocaleDateString("en-us", {
+function setCurrentTime(forecast) {
+  return new Date(forecast["location"].localtime).toLocaleDateString("en-us", {
     weekday: "long",
     year: "numeric",
     month: "long",
@@ -79,4 +81,3 @@ function setCurrentTime() {
 }
 
 setFields("sioux falls");
-console.log(setCurrentTime());

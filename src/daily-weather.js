@@ -12,7 +12,7 @@ export function createDailyWeather(forecast) {
   try {
     const threeDayDaily = setThreeDayDaily(forecast);
     const dailyWeatherElement = document.createElement("div");
-    dailyWeatherElement.classList.add("space-around");
+    dailyWeatherElement.classList.add("forecast-container");
     threeDayDaily.forEach((day) => {
       const dayElement = setDayElement(
         day.title,

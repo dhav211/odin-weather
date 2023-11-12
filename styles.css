@@ -134,6 +134,12 @@ button {
     margin-bottom: 1rem;
 }
 
+.forecast-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
 .daily-weather-title {
     font-size: clamp(22px, 2.5vw, 28px);
 }
@@ -147,6 +153,21 @@ button {
 
 .daily-weather-condition-container  h2 {
     margin: 0 0;
+}
+
+.navigation-circles {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.navigation-circle {
+    background-color: #F5F7F8;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
 }
 
 @media (max-width: 726px) {

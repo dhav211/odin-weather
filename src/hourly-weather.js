@@ -7,27 +7,32 @@ class HourlyWeather {
   }
 }
 
-export function createHourlyForecast(forecast) {
+let forecast;
+let hourlyWeatherElement;
+let numberOfHours = 0;
+let numberOfNavigationCircles = 0;
+let currentHighlightedNavigationCircle = 0;
+
+export function createHourlyForecast(currentForecast) {
   try {
-    const hourlyForecast = setHourlyForecast(forecast);
-    const hourlyWeatherElement = document.createElement("div");
-    hourlyWeatherElement.classList.add("inline-spaced");
+    forecast = currentForecast;
+    hourlyWeatherElement = document.createElement("div");
 
-    hourlyForecast.forEach((hourly) => {
-      const hourElement = document.createElement("div");
+    if (window.innerWidth >= 1000) {
+      numberOfHours = 8;
+      numberOfNavigationCircles = 3;
+    } else if (window.innerWidth < 1000 && window.innerWidth >= 700) {
+      numberOfHours = 6;
+      numberOfNavigationCircles = 4;
+    } else if (window.innerWidth < 700 && window.innerWidth >= 500) {
+      numberOfHours = 4;
+      numberOfNavigationCircles = 6;
+    } else if (window.innerWidth < 500) {
+      numberOfHours = 3;
+      numberOfNavigationCircles = 8;
+    }
 
-      const time = document.createElement("p");
-      time.textContent = hourly.hour;
-
-      const condition = document.createElement("p");
-      condition.textContent = hourly.condition;
-
-      const temp = document.createElement("p");
-      temp.textContent = hourly.temperature;
-
-      hourElement.replaceChildren(time, condition, temp);
-      hourlyWeatherElement.appendChild(hourElement);
-    });
+    buildHourlyWeatherElement(0);
 
     return hourlyWeatherElement;
   } catch (err) {
@@ -38,14 +43,125 @@ export function createHourlyForecast(forecast) {
   }
 }
 
-function setHourlyForecast(forecast) {
+// TODO use css grid to divide the hourly weather element in three parts. two parts which are about 48-64px for the arrows on each end
+//  then the middle section can be auto sized
+
+function buildHourlyWeatherElement(index) {
+  hourlyWeatherElement.replaceChildren();
+
+  setWeatherHours(index * numberOfHours);
+  setNavigationCircles();
+}
+
+function setWeatherHours(startingHour) {
+  const hourlyForecast = setHourlyForecast(forecast);
+  const hours = document.createElement("div");
+  hours.classList.add("forecast-container");
+  hourlyWeatherElement.appendChild(hours);
+
+  const leftArrow = document.createElement("img");
+  leftArrow.src = "./images/icons/chevron-left.svg";
+  leftArrow.classList.add("small-icon");
+  leftArrow.addEventListener("click", () => {
+    currentHighlightedNavigationCircle =
+      currentHighlightedNavigationCircle - 1 < 0
+        ? numberOfNavigationCircles - 1
+        : currentHighlightedNavigationCircle - 1;
+
+    buildHourlyWeatherElement(currentHighlightedNavigationCircle);
+  });
+
+  const rightArrow = document.createElement("img");
+  rightArrow.src = "./images/icons/chevron-right.svg";
+  rightArrow.classList.add("small-icon");
+  rightArrow.addEventListener("click", () => {
+    currentHighlightedNavigationCircle =
+      currentHighlightedNavigationCircle + 1 === numberOfNavigationCircles
+        ? 0
+        : currentHighlightedNavigationCircle + 1;
+
+    buildHourlyWeatherElement(currentHighlightedNavigationCircle);
+  });
+
+  hours.appendChild(leftArrow);
+
+  if (numberOfHours + startingHour > 24) {
+    console.log("hey stop!!");
+    currentHighlightedNavigationCircle--;
+    startingHour -= numberOfHours;
+  }
+
+  for (let i = 0; i < numberOfHours; i++) {
+    const hourElement = setHourElement(
+      hourlyForecast[i + startingHour].hour,
+      hourlyForecast[i + startingHour].conditionCode,
+      hourlyForecast[i + startingHour].temperature,
+    );
+
+    hours.appendChild(hourElement);
+  }
+
+  hours.appendChild(rightArrow);
+}
+
+function setNavigationCircles() {
+  const navigationCircles = document.createElement("div");
+  navigationCircles.classList.add("navigation-circles");
+
+  for (let i = 0; i < numberOfNavigationCircles; i++) {
+    const navigationCircle = document.createElement("div");
+    navigationCircle.classList.add("navigation-circle");
+    navigationCircles.appendChild(navigationCircle);
+    navigationCircle.addEventListener("click", () => {
+      currentHighlightedNavigationCircle = i;
+      buildHourlyWeatherElement(i);
+    });
+
+    if (i === currentHighlightedNavigationCircle) {
+      navigationCircle.style.backgroundColor = "#F5E8C7";
+    }
+  }
+
+  hourlyWeatherElement.appendChild(navigationCircles);
+}
+
+function setHourElement(hour, conditionCode, temperature) {
+  const hourElement = document.createElement("div");
+
+  const hourText = document.createElement("h2");
+  hourText.textContent = hour;
+
+  const conditionContainer = document.createElement("div");
+  conditionContainer.classList.add("daily-weather-condition-container");
+  const icon = document.createElement("img");
+  icon.classList.add("small-icon");
+  fetch("src/conditions.json")
+    .then((r) => r.json())
+    .then(
+      (conditions) =>
+        (icon.src = `./images/icons/${conditions[conditionCode].icon}.svg`),
+    );
+  const temperatureText = document.createElement("h2");
+  temperatureText.textContent = `${temperature}°`;
+  conditionContainer.replaceChildren(icon, temperatureText);
+
+  hourElement.replaceChildren(hourText, conditionContainer);
+
+  return hourElement;
+}
+
+function setHourlyForecast() {
   const hourly = [];
 
-  const todaysDate = new Date();
-  const currentHour = todaysDate.getHours();
+  const forecastDate = new Date(forecast["location"].localtime);
+  const currentHour = forecastDate.getHours();
 
-  const todaysHours = forecast.forecastday[0].hour.slice(currentHour);
-  const tomorrowsHours = forecast.forecastday[1].hour.slice(0, currentHour);
+  const todaysHours =
+    forecast["forecast"].forecastday[0].hour.slice(currentHour);
+  const tomorrowsHours = forecast["forecast"].forecastday[1].hour.slice(
+    0,
+    currentHour,
+  );
   const combinedHours = [].concat(todaysHours, tomorrowsHours);
 
   combinedHours.forEach((hour) =>
@@ -77,4 +193,34 @@ function setHour(date) {
   }
 
   return hour;
+}
+
+// Trigger a rebuild of the hourly weather element
+addEventListener("resize", () => {
+  if (window.innerWidth >= 1000 && numberOfHours !== 8) {
+    setForRebuildOnResize(8, 3);
+  } else if (
+    window.innerWidth < 1000 &&
+    window.innerWidth >= 700 &&
+    numberOfHours !== 6
+  ) {
+    setForRebuildOnResize(6, 4);
+  } else if (
+    window.innerWidth < 700 &&
+    window.innerWidth >= 500 &&
+    numberOfHours !== 4
+  ) {
+    setForRebuildOnResize(4, 6);
+  } else if (window.innerWidth < 500 && numberOfHours !== 3) {
+    setForRebuildOnResize(3, 8);
+  }
+});
+
+function setForRebuildOnResize(hours, circles) {
+  currentHighlightedNavigationCircle = Math.round(
+    (numberOfHours * currentHighlightedNavigationCircle) / hours,
+  );
+  numberOfHours = hours;
+  numberOfNavigationCircles = circles;
+  buildHourlyWeatherElement(currentHighlightedNavigationCircle);
 }
