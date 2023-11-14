@@ -23,8 +23,12 @@ h1 {
     margin: 4px;
 }
 
-h2 {
+h2, h3 {
    text-align: center; 
+}
+
+h3 {
+    font-size: 22px;
 }
 
 input {
@@ -151,6 +155,12 @@ ul {
 .small-icon {
     width: 48px;
     height: 48px;
+    filter: invert(100%) sepia(1%) saturate(1696%) hue-rotate(171deg) brightness(90%) contrast(117%);
+}
+
+.smaller-icon {
+    width: 32px;
+    height: 32px;
     filter: invert(100%) sepia(1%) saturate(1696%) hue-rotate(171deg) brightness(90%) contrast(117%);
 }
 

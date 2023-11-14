@@ -44,7 +44,10 @@ class HourlyWeatherContainer {
 
     const leftArrow = document.createElement("img");
     leftArrow.src = "./images/icons/chevron-left.svg";
-    leftArrow.classList.add("small-icon");
+    leftArrow.classList.add("arrow");
+    leftArrow.classList.add(
+      window.innerWidth > 420 ? "small-icon" : "smaller-icon",
+    );
     leftArrow.addEventListener("click", () =>
       arrowOnClick(
         hourlyWeatherContainer.currentHighlightedNavigationCircle - 1 < 0
@@ -58,7 +61,10 @@ class HourlyWeatherContainer {
 
     const rightArrow = document.createElement("img");
     rightArrow.src = "./images/icons/chevron-right.svg";
-    rightArrow.classList.add("small-icon");
+    rightArrow.classList.add("arrow");
+    rightArrow.classList.add(
+      window.innerWidth > 420 ? "small-icon" : "smaller-icon",
+    );
     rightArrow.addEventListener("click", () =>
       arrowOnClick(
         hourlyWeatherContainer.currentHighlightedNavigationCircle + 1 ===
@@ -89,7 +95,7 @@ export function closeHourlyForecast() {
 export function createHourlyForecast(currentForecast) {
   try {
     forecast = currentForecast;
-    isOpen = false;
+    isOpen = true;
     hourlyWeatherContainer = setInitalHourlyWeatherContainer();
 
     setWeatherHours(0);
@@ -201,26 +207,53 @@ function arrowOnClick(newCurrentHighlightedNavigationCircle) {
 function setHourElement(hour, conditionCode, temperature) {
   const hourElement = document.createElement("div");
 
-  const hourText = document.createElement("h2");
+  const hourText = document.createElement(
+    window.innerWidth > 420 ? "h2" : "h3",
+  );
   hourText.textContent = hour;
 
   const conditionContainer = document.createElement("div");
   conditionContainer.classList.add("daily-weather-condition-container");
   const icon = document.createElement("img");
-  icon.classList.add("small-icon");
+
+  icon.classList.add(window.innerWidth > 420 ? "small-icon" : "smaller-icon");
+
   fetch("src/conditions.json")
     .then((r) => r.json())
     .then(
       (conditions) =>
         (icon.src = `./images/icons/${conditions[conditionCode].icon}.svg`),
     );
-  const temperatureText = document.createElement("h2");
+  const temperatureText = document.createElement(
+    window.innerWidth > 420 ? "h2" : "h3",
+  );
   temperatureText.textContent = `${temperature}°`;
   conditionContainer.replaceChildren(icon, temperatureText);
 
   hourElement.replaceChildren(hourText, conditionContainer);
 
   return hourElement;
+}
+
+// Since arrows aren't rebuild on resize, this hack changes the class list if it needs to resize
+function changeArrowClassOnResize() {
+  if (window.innerWidth > 420) {
+    const arrows = document.getElementsByClassName("arrow");
+    arrows.forEach((arrow) => {
+      if (arrow.classList.contains("smaller-icon"))
+        arrow.classList.remove("smaller-icon");
+
+      if (!arrow.classList.contains("small-icon")) {
+        arrow.classList.add("small-icon");
+      }
+    });
+  } else {
+    if (arrow.classList.contains("small-icon"))
+      arrow.classList.remove("small-icon");
+
+    if (!arrow.classList.contains("smaller-icon"))
+      arrow.classList.add("smaller-icon");
+  }
 }
 
 // sets the data for the hourly weather elements grabbed from the weather api for given location
@@ -296,6 +329,8 @@ addEventListener("resize", () => {
 });
 
 function setForRebuildOnResize(hours, circles) {
+  changeArrowClassOnResize();
+
   hourlyWeatherContainer.currentHighlightedNavigationCircle = Math.round(
     (hourlyWeatherContainer.numberOfHours *
       hourlyWeatherContainer.currentHighlightedNavigationCircle) /
