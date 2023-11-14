@@ -30,7 +30,7 @@ async function fetchBannerImage(bannerWeatherCondition, isDay) {
       bannerWeatherCondition,
       isDay,
     )}&orientation=${setOrientation()}`,
-    { mode: "cors" },
+    { mode: "cors", headers: { "Access-Control-Allow-Origin": "*" } },
   );
 
   const json = await response.json();

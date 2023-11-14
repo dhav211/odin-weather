@@ -61,7 +61,7 @@ cityForm.addEventListener("focusin", () => {});
 async function findCities(cityNameAttempt) {
   const response = await fetch(
     `https://api.weatherapi.com/v1/search.json?key=a153e9f2c28c497e9e613836230111&q=${cityNameAttempt}`,
-    { mode: "cors" },
+    { mode: "cors", headers: { "Access-Control-Allow-Origin": "*" } },
   );
   const cities = await response.json();
 

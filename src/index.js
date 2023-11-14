@@ -9,7 +9,7 @@ const loadingContainer = document.getElementById("loading-container");
 async function getForecast(cityName) {
   const response = await fetch(
     `https://api.weatherapi.com/v1/forecast.json?key=a153e9f2c28c497e9e613836230111&q=${cityName}&days=3`,
-    { mode: "cors" },
+    { mode: "cors", headers: { "Access-Control-Allow-Origin": "*" } },
   );
   const weather = await response.json();
 
