@@ -39,6 +39,10 @@ button {
     border-radius: 16px;
 }
 
+form {
+    position: relative;
+}
+
 #city-form {
     padding: 8px;
     background-color: transparent;
@@ -57,6 +61,21 @@ button {
     height: 450px;
     object-fit: cover;
     margin-top: 1rem;
+}
+
+#suggestion-box {
+    position: absolute;
+    top: 48px;
+    background-color: #F5F7F8;
+    border-radius: 8px;
+}
+
+
+ul {
+    color: black;
+    list-style-type: none;    
+    margin: 0;
+    padding: 1rem .5rem;
 }
 
 .rounded-container {
