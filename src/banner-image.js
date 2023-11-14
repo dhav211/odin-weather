@@ -1,11 +1,27 @@
+/*
+The banner image will be selected at random from unsplash, although its random it does have some rules to it.
+It takes the weather apis condition code and converts it to a more focused enum value.
+This and along with if its night or night is the basis for the search result.
+Also window with is a factor on search results, anything over 500 will be in landscape mode, under 500 and the picture will be portrait
+*/
+
 const banner = document.getElementById("banner");
 
 export async function setBannerFromForecast(forecast) {
-  const bannerWeatherCondition = setBannerWeatherCondition(
-    forecast.condition.code,
-  );
+  try {
+    const bannerWeatherCondition = setBannerWeatherCondition(
+      forecast.condition.code,
+    );
 
-  banner.src = await fetchBannerImage(bannerWeatherCondition, forecast.is_day);
+    banner.src = await fetchBannerImage(
+      bannerWeatherCondition,
+      forecast.is_day,
+    );
+  } catch (err) {
+    // unsplash api ran out of it's 50 free request allownace, just set a local image
+    console.error(err);
+    banner.src = setSavedImage(forecast);
+  }
 }
 
 async function fetchBannerImage(bannerWeatherCondition, isDay) {
@@ -89,6 +105,22 @@ function setOrientation() {
   }
 
   return orientation;
+}
+
+function setSavedImage(forecast) {
+  const bannerWeatherCondition = setBannerWeatherCondition(
+    forecast.condition.code,
+  );
+  let savedImageName = setQuery(
+    bannerWeatherCondition,
+    forecast.is_day,
+  ).replace(" ", "_");
+  if (window.innerWidth > 500) {
+    savedImageName += "_landscape";
+  } else {
+    savedImageName += "_portrait";
+  }
+  return `./images/photos/${savedImageName}.jpg`;
 }
 
 // Probably a better way to go about this, but this will simplify the four digition code into a simpler code to get a weather based picture

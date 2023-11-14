@@ -3,6 +3,9 @@ import { createHourlyForecast, closeHourlyForecast } from "./hourly-weather.js";
 import { createCurrentWeatherDetails } from "./current-weather-details.js";
 import { setBannerFromForecast } from "./banner-image.js";
 
+const content = document.getElementById("content");
+const loadingContainer = document.getElementById("loading-container");
+
 async function getForecast(cityName) {
   const response = await fetch(
     `https://api.weatherapi.com/v1/forecast.json?key=a153e9f2c28c497e9e613836230111&q=${cityName}&days=3`,
@@ -14,23 +17,37 @@ async function getForecast(cityName) {
 }
 
 export async function setContent(cityName) {
-  const forecast = await getForecast(cityName);
-  console.log(forecast);
+  let currentForecast = undefined;
+  content.style.display = "none";
+  loadingContainer.style.display = "flex";
+  getForecast(cityName).then((result) => {
+    currentForecast = result;
+    setBannerFromForecast(currentForecast["current"]).then(() => {
+      setFields(currentForecast);
+    });
+  });
+}
+
+function setFields(currentForecast) {
   const cityHeader = document.getElementById("city-header");
   document.getElementById("current-time-date").textContent =
-    setCurrentTime(forecast);
+    setCurrentTime(currentForecast);
 
-  cityHeader.textContent = forecast["location"].name;
-  setBannerFromForecast(forecast["current"]);
+  cityHeader.textContent = currentForecast["location"].name;
 
   const currentWeatherDetails = document.getElementById(
     "current-weather-details-container",
   );
 
   currentWeatherDetails.replaceChildren();
-  currentWeatherDetails.appendChild(createCurrentWeatherDetails(forecast));
+  currentWeatherDetails.appendChild(
+    createCurrentWeatherDetails(currentForecast),
+  );
 
-  setDailyHourlyButtons(forecast);
+  setDailyHourlyButtons(currentForecast);
+
+  content.style.display = "block";
+  loadingContainer.style.display = "none";
 }
 
 function setDailyHourlyButtons(forecast) {

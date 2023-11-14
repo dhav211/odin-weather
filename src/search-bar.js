@@ -1,3 +1,10 @@
+/*
+User will be able to type in a city and search it to get weather forecast.
+Once user starts typing into search box it will request the weather api to find cities with what user has typed
+If it returns results then there is a suggestion box that will pop up with given results from api
+User can click on a suggestion to show weather forecast for that city
+*/
+
 import { setContent } from "./index.js";
 
 const cityForm = document.getElementById("city-form");

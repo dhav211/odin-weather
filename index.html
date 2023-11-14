@@ -9,33 +9,37 @@
     <title>Odin Weather</title>
   </head>
   <body>
-    <header>
-      <h1 id="city-header">Cool City</h1>
-      <form id="city-search-form">
-        <input
-          type="text"
-          id="city-form"
-          name="city"
-          placeholder="Enter A City Name"
-          autocomplete="off"
-        />
-        <input id="submit-form" type="submit" value="Submit" />
-      </form>
-    </header>
-    <img
-      id="banner"
-      src="./images/photos/snowy_day.jpg"
-      alt="imaged based on time and weather"
-    />
-    <h2 id="current-time-date">A cool date</h2>
-    <div id="current-weather-details-container" class="rounded-container"></div>
-    <div id="daily-hourly-weather-button-container">
-      <button id="daily-button">Daily</button>
-      <button id="hourly-button">Hourly</button>
+    <div id="content">
+      <header>
+        <h1 id="city-header">Cool City</h1>
+        <form id="city-search-form">
+          <input
+            type="text"
+            id="city-form"
+            name="city"
+            placeholder="Enter A City Name"
+            autocomplete="off"
+          />
+          <input id="submit-form" type="submit" value="Submit" />
+        </form>
+      </header>
+      <img id="banner" src="#" alt="imaged based on time and weather" />
+      <h2 id="current-time-date">A cool date</h2>
+      <div
+        id="current-weather-details-container"
+        class="rounded-container"
+      ></div>
+      <div id="daily-hourly-weather-button-container">
+        <button id="daily-button">Daily</button>
+        <button id="hourly-button">Hourly</button>
+      </div>
+      <div
+        id="daily-hourly-forecast-container"
+        class="rounded-container padding-bottom"
+      ></div>
     </div>
-    <div
-      id="daily-hourly-forecast-container"
-      class="rounded-container padding-bottom"
-    ></div>
+    <div id="loading-container">
+      <img src="./images/icons/reload.svg" alt="loading icon" id="loading" />
+    </div>
   </body>
 </html>

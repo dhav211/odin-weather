@@ -1,5 +1,6 @@
 body, html {
     margin: 0;
+    height: 100%;
 }
 
 body {
@@ -41,6 +42,34 @@ button {
 
 form {
     position: relative;
+}
+
+#loading-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#loading {
+    width: 40%;
+    height: auto;
+    transform-origin: center;
+    filter: invert(100%) sepia(1%) saturate(1696%) hue-rotate(171deg) brightness(90%) contrast(117%);
+    animation-name: spin;
+    animation-duration: 2000ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 #city-form {
