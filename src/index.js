@@ -1,6 +1,7 @@
 import { createDailyWeather } from "./daily-weather.js";
 import { createHourlyForecast, closeHourlyForecast } from "./hourly-weather.js";
 import { createCurrentWeatherDetails } from "./current-weather-details.js";
+import { setBannerFromForecast } from "./banner-image.js";
 
 async function getForecast(cityName) {
   const response = await fetch(
@@ -14,11 +15,13 @@ async function getForecast(cityName) {
 
 export async function setContent(cityName) {
   const forecast = await getForecast(cityName);
+  console.log(forecast);
   const cityHeader = document.getElementById("city-header");
   document.getElementById("current-time-date").textContent =
     setCurrentTime(forecast);
 
   cityHeader.textContent = forecast["location"].name;
+  setBannerFromForecast(forecast["current"]);
 
   const currentWeatherDetails = document.getElementById(
     "current-weather-details-container",
