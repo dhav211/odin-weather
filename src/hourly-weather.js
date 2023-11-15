@@ -237,22 +237,24 @@ function setHourElement(hour, conditionCode, temperature) {
 
 // Since arrows aren't rebuild on resize, this hack changes the class list if it needs to resize
 function changeArrowClassOnResize() {
-  if (window.innerWidth > 420) {
-    const arrows = document.getElementsByClassName("arrow");
-    arrows.forEach((arrow) => {
-      if (arrow.classList.contains("smaller-icon"))
-        arrow.classList.remove("smaller-icon");
+  const arrows = document.getElementsByClassName("arrow");
+  console.log(arrows);
+  for (let i = 0; i < arrows.length; i++) {
+    if (window.innerWidth > 420) {
+      console.log("greater");
+      if (arrows[i].classList.contains("smaller-icon"))
+        arrows[i].classList.remove("smaller-icon");
 
-      if (!arrow.classList.contains("small-icon")) {
-        arrow.classList.add("small-icon");
-      }
-    });
-  } else {
-    if (arrow.classList.contains("small-icon"))
-      arrow.classList.remove("small-icon");
+      if (!arrows[i].classList.contains("small-icon"))
+        arrows[i].classList.add("small-icon");
+    } else {
+      console.log("lesser");
+      if (arrows[i].classList.contains("small-icon"))
+        arrows[i].classList.remove("small-icon");
 
-    if (!arrow.classList.contains("smaller-icon"))
-      arrow.classList.add("smaller-icon");
+      if (!arrows[i].classList.contains("smaller-icon"))
+        arrows[i].classList.add("smaller-icon");
+    }
   }
 }
 
